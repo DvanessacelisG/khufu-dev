@@ -1,0 +1,51 @@
+.create-ticket {
+  width: 30%;
+  padding: 40px 80px;
+  border-radius: 20px;
+  border: 2px solid #dbdbdb;
+  box-sizing: border-box;
+  min-width: 750px;
+  min-width: 800px;
+
+  &__title {
+    text-align: center;
+  }
+  &__form {
+  }
+  &__field {
+    box-sizing: border-box;
+    padding: 5px;
+    display: inline-block;
+    width: 50%;
+    &--title {
+      width: 100%;
+    }
+    input {
+      box-sizing: border-box;
+      padding: 10px;
+      border: 1px solid #eaeaea;
+      border-radius: 10px;
+      display: block;
+      width: 100%;
+    }
+  }
+  &__btns {
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+  }
+  &__btn {
+    cursor: pointer;
+    padding: 10px 60px;
+    border: none;
+    border-radius: 30px;
+    color: #ffffff;
+    &--create {
+      background-color: #95de30;
+    }
+    &--cancel {
+      background-color: #ff7076;
+    }
+  }
+}
