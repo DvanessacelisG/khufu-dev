@@ -6,7 +6,7 @@ type ticketForm = {
   projectRole: string,
   priority: string,
   numberPositions: string,
-  recruiter: string
+  recruiter: string,
 };
 type ticketFormField =
   | Title
@@ -17,3 +17,4 @@ type ticketFormField =
   | Priority
   | NumberPositions
   | Recruiter;
+type ticketsList = {tickets: list(ticketForm)};

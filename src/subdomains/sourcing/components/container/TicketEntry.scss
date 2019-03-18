@@ -1,7 +1,9 @@
-.ticket-entry {
-  display: flex;
-  flex-direction: row;
-  border-bottom: 1px solid #c2c2c2;
+.ticket-list {
+  &__entry {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #c2c2c2;
+  }
   &__ticket-preview {
   }
   &__canditates {
