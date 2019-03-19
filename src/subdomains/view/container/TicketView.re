@@ -19,17 +19,10 @@ type state = {
 let renderTickets = (~tickets: Ticket.ticketsList) =>
   <TicketList tickectsList=tickets />;
 
-let renderFooter = () =>
-  <section>
-    <p>
-      {ReasonReact.string(
-         "2 Open Tickets, 14 Active Candidates and 33 Total Candidates",
-       )}
-    </p>
-    <a> {ReasonReact.string("Add Ticket")} </a>
-  </section>;
-
-let renderCreateTicketForm = () => <CreateTicketContainer />;
+let renderCreateTicketForm = self =>
+  ReasonReact.(
+    <CreateTicketContainer close={() => self.send(A_CloseTicketForm)} />
+  );
 
 let fetchTickets = self => {
   let tickets = TicketService.getTickets();
@@ -65,36 +58,50 @@ let reducer = (action, state) =>
   | A_DisplayError =>
     ReasonReact.Update({...state, currentDisplay: S_ErrorDisplayed})
   };
+let renderPageMessage = (message, showTicketForm, self) => {
+  ReasonReact.(
+    <div>
+      <TicketOverview />
+      <h2> {ReasonReact.string(message)} </h2>
+      <TicketViewFooter
+        cancel={() => self.send(A_DisplayTicketForm)}
+        length=0
+      />
+      {showTicketForm ? renderCreateTicketForm(self) : ReasonReact.null}
+    </div>
+  );
+};
+
+let renderPageTickets =
+    (ticketsList: Ticket.ticketsList, showTicketForm, self) => {
+  ReasonReact.(
+    <div>
+      <TicketOverview />
+      {renderTickets(ticketsList)}
+      <TicketViewFooter
+        cancel={() => self.send(A_DisplayTicketForm)}
+        length={List.length(ticketsList.tickets)}
+      />
+      {showTicketForm ? renderCreateTicketForm(self) : ReasonReact.null}
+    </div>
+  );
+};
+
 let render = self =>
   ReasonReact.(
     switch (self.state.currentDisplay) {
     | S_ComponentsCreated =>
-      <div>
-        <h2> {ReasonReact.string("Components Loaded")} </h2>
-        {renderFooter()}
-        {self.state.createTicketForm ? renderCreateTicketForm() : null}
-      </div>
-
+      renderPageMessage(
+        "Components Loaded",
+        self.state.createTicketForm,
+        self,
+      )
     | S_FetchingTickets =>
-      <div>
-        <h2> {ReasonReact.string("loading...")} </h2>
-        {renderFooter()}
-        {self.state.createTicketForm ? renderCreateTicketForm() : null}
-      </div>
-
+      renderPageMessage("loading...", self.state.createTicketForm, self)
     | S_TicketsDisplayed(ticketsList) =>
-      <div>
-        {renderTickets(ticketsList)}
-        {renderFooter()}
-        {self.state.createTicketForm ? renderCreateTicketForm() : null}
-      </div>
-
+      renderPageTickets(ticketsList, self.state.createTicketForm, self)
     | S_ErrorDisplayed =>
-      <div>
-        <h2> {ReasonReact.string("Error")} </h2>
-        {renderFooter()}
-        {self.state.createTicketForm ? renderCreateTicketForm() : null}
-      </div>
+      renderPageMessage("Error", self.state.createTicketForm, self)
     }
   );
 let component = ReasonReact.reducerComponent("TicketView");

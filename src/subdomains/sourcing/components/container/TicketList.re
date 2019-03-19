@@ -1,7 +1,17 @@
+[%raw {| require("./TicketList.scss") |}];
 let component = ReasonReact.statelessComponent("TicketList");
 
-let renderTicket = t => {
-  <TicketEntry />;
+let renderTicket = ticket => {
+  <TicketEntry ticket />;
+};
+let ticketListHeader = () => {
+  <ul className="ticket-list__headers">
+    <li> {ReasonReact.string("Ticket Information")} </li>
+    <li> {ReasonReact.string("Candidate Name")} </li>
+    <li> {ReasonReact.string("Status")} </li>
+    <li> {ReasonReact.string("Recent Commet")} </li>
+    <li> {ReasonReact.string("Last Updated")} </li>
+  </ul>;
 };
 
 let renderTickets = tickets => {
@@ -9,7 +19,7 @@ let renderTickets = tickets => {
     List.map(t => renderTicket(t), tickets)
     |> Array.of_list
     |> ReasonReact.array;
-  <div className="ticket-list"> ticketList </div>;
+  <div className="ticket-list"> {ticketListHeader()} ticketList </div>;
 };
 
 let make = (~tickectsList: Ticket.ticketsList, _children) => {

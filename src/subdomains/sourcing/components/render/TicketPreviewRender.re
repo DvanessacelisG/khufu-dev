@@ -1,30 +1,30 @@
 [%raw {| require("./TicketPreview.scss") |}];
 let component = ReasonReact.statelessComponent("TicketPreviewRender");
 
-let make = (~elementClass, _children) => {
+let make = (~ticket: Ticket.ticketForm, ~elementClass, _children) => {
   ...component,
   render: _self => {
     <section className={"ticket-preview " ++ elementClass}>
       <div>
         <h1 className="ticket-preview__title">
-          {ReasonReact.string("Automation Testing")}
+          {ReasonReact.string(ticket.title)}
         </h1>
         <p className="ticket-preview__assign">
-          {ReasonReact.string("Assigned to: German")}
+          {ReasonReact.string("Assigned to:" ++ ticket.recruiter)}
         </p>
       </div>
       <div className="ticket-preview__details">
         <p className="ticket-preview__detail">
           <span> {ReasonReact.string("Discipline:")} </span>
-          {ReasonReact.string("Testing")}
+          {ReasonReact.string(ticket.discipline)}
         </p>
         <p className="ticket-preview__detail">
           <span> {ReasonReact.string("Project Role:")} </span>
-          {ReasonReact.string("Automation Tester")}
+          {ReasonReact.string(ticket.projectRole)}
         </p>
         <p className="ticket-preview__detail">
           <span> {ReasonReact.string("Grade:")} </span>
-          {ReasonReact.string("Technician")}
+          {ReasonReact.string(ticket.grade)}
         </p>
         <p className="ticket-preview__detail">
           <span> {ReasonReact.string("Status:")} </span>

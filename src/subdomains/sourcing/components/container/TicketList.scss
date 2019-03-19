@@ -1,4 +1,14 @@
 .ticket-list {
+  &__headers {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 10px 0;
+    list-style: none;
+    justify-content: space-around;
+    color: #ffffff;
+    background-color: #0092dd;
+  }
   &__entry {
     display: flex;
     flex-direction: row;

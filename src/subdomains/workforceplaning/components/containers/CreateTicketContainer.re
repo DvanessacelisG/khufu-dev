@@ -53,7 +53,7 @@ let sendForm = (ticketForm: Ticket.ticketForm, self) => {
 };
 
 let component = ReasonReact.reducerComponent("CreateTicketContainer");
-let make = _self => {
+let make = (~close, _self) => {
   ...component,
   initialState: () => S_WaitingForTicket(ticketValues),
   reducer: (action, _state) =>
@@ -76,7 +76,9 @@ let make = _self => {
       )
     | A_SendSuccesful => ReasonReact.Update(S_FormSent)
     | A_ErrorSending => ReasonReact.Update(S_SendFailed)
-    | A_Cancel => ReasonReact.NoUpdate
+    | A_Cancel =>
+      close();
+      ReasonReact.NoUpdate;
     },
   render: self => {
     switch (self.state) {
