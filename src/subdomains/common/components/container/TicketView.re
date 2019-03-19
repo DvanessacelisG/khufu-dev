@@ -28,12 +28,31 @@ let renderFooter = () =>
     </p>
     <a> {ReasonReact.string("Add Ticket")} </a>
   </section>;
+
 let renderCreateTicketForm = () => <CreateTicketContainer />;
+
+let fetchTickets = self => {
+  let tickets = TicketService.getTickets();
+  tickets
+  |> BsFluture.fork(
+       error => Js.log("ERROR"),
+       value =>
+         ReasonReact.(
+           self.send(
+             A_DisplayTickets(JsonResponseMapper.decodeTicketList(value)),
+           )
+         ),
+     )
+  |> ignore;
+};
 
 let reducer = (action, state) =>
   switch (action) {
   | A_FetchTickets =>
-    ReasonReact.Update({...state, currentDisplay: S_FetchingTickets})
+    ReasonReact.UpdateWithSideEffects(
+      {...state, currentDisplay: S_FetchingTickets},
+      fetchTickets,
+    )
   | A_DisplayTickets(ticketsList) =>
     ReasonReact.Update({
       ...state,
