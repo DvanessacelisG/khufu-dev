@@ -42,9 +42,14 @@ let validateForm = (ticketForm: Ticket.ticketForm, self) => {
   ReasonReact.(self.send(A_Send(ticketForm)));
 };
 
-let sendForm = (_ticketForm: Ticket.ticketForm, self) => {
-  Js.log("Form Sent");
-  ReasonReact.(self.send(A_SendSuccesful));
+let sendForm = (ticketForm: Ticket.ticketForm, self) => {
+  let ticketCreated = TicketService.createTicket(ticketForm);
+  ticketCreated
+  |> BsFluture.fork(
+       error => ReasonReact.(self.send(A_ErrorSending)),
+       value => ReasonReact.(self.send(A_SendSuccesful)),
+     )
+  |> ignore;
 };
 
 let component = ReasonReact.reducerComponent("CreateTicketContainer");
@@ -85,8 +90,8 @@ let make = _self => {
         cancel={() => self.send(A_Cancel)}
       />
     | S_Sending(ticketForm) => <h2> {ReasonReact.string("Sending")} </h2>
-    | S_FormSent => <h2> {ReasonReact.string("Form Sent")} </h2>
-    | _ => <h2> {ReasonReact.string("Error")} </h2>
+    | S_FormSent => <h2> {ReasonReact.string("TICKET CREATED")} </h2>
+    | _ => <h2> {ReasonReact.string("ERROR")} </h2>
     };
   },
 };
