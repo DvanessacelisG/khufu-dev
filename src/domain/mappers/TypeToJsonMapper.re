@@ -1,12 +1,13 @@
-let ticketToJson = (ticket: Ticket.ticketForm) => {
-  let payload = Js.Dict.empty();
-  Js.Dict.set(payload, "title", Js.Json.string(ticket.title));
-  Js.Dict.set(payload, "discipline", Js.Json.string(ticket.title));
-  Js.Dict.set(payload, "projectName", Js.Json.string(ticket.title));
-  Js.Dict.set(payload, "grade", Js.Json.string(ticket.title));
-  Js.Dict.set(payload, "projectRole", Js.Json.string(ticket.title));
-  Js.Dict.set(payload, "priority", Js.Json.string(ticket.title));
-  Js.Dict.set(payload, "numberPositions", Js.Json.string(ticket.title));
-  Js.Dict.set(payload, "recruiter", Js.Json.string(ticket.title));
-  payload;
-};
+let ticketToJson = (ticket: Ticket.ticketForm) =>
+  Json.Encode.(
+    object_([
+      ("title", string(ticket.title)),
+      ("discipline", string(ticket.discipline)),
+      ("projectName", string(ticket.projectName)),
+      ("grade", string(ticket.grade)),
+      ("projectRole", string(ticket.projectRole)),
+      ("priority", string(ticket.priority)),
+      ("numberPositions", string(ticket.numberPositions)),
+      ("recruiter", string(ticket.recruiter)),
+    ])
+  );
