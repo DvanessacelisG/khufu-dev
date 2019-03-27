@@ -1,5 +1,5 @@
-let create_ticket_endpoint = "https://reqres.in/api/users";
-let get_tickets_endpoint = "http://www.mocky.io/v2/5c8fc25e3600003a47f0feef";
+let create_ticket_endpoint = "http://localhost:80/api/createticket";
+let get_tickets_endpoint = "http://localhost:80/api/tickets";
 
 let createTicket = ticket => {
   let json = TypeToJsonMapper.ticketToJson(ticket);

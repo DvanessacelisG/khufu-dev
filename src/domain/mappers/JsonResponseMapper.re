@@ -1,3 +1,4 @@
+
 let decodeTicket = json =>
   Json.Decode.{
     Ticket.title: json |> field("title", string),
@@ -6,12 +7,11 @@ let decodeTicket = json =>
     Ticket.grade: json |> field("grade", string),
     Ticket.projectRole: json |> field("projectRole", string),
     Ticket.priority: json |> field("priority", string),
-    Ticket.numberPositions: json |> field("numberPositions", string),
+    Ticket.numberPositions:
+      string_of_int(json |> field("numberOfPositions", int)),
     Ticket.recruiter: json |> field("recruiter", string),
   };
 
 let decodeTicketList = json => {
-  Json.Decode.{
-    Ticket.tickets: json |> field("tickets", list(decodeTicket)),
-  };
+  Json.Decode.{Ticket.tickets: json |> list(decodeTicket)};
 };
