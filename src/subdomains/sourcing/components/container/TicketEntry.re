@@ -1,5 +1,5 @@
 let component = ReasonReact.statelessComponent("TicketEntry");
-let make = (~ticket: Ticket.ticketForm, _children) => {
+let make = (~ticket: Ticket.ticket, _children) => {
   ...component,
   render: _self => {
     <section className="ticket-list__entry">

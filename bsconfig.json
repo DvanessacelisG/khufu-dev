@@ -3,10 +3,12 @@
   "reason": {
     "react-jsx": 2
   },
-  "sources": {
-    "dir": "src",
-    "subdirs": true
-  },
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
   "package-specs": [
     {
       "module": "commonjs",
@@ -15,6 +17,11 @@
   ],
   "suffix": ".bs.js",
   "namespace": true,
+  "bs-dev-dependencies": [
+    "bs-enzyme",
+    "@glennsl/bs-jest"
+    
+  ],
   "bs-dependencies": [
     "reason-react",
     "bs-fetch",

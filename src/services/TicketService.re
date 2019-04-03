@@ -1,5 +1,5 @@
-let create_ticket_endpoint = "http://localhost:80/api/createticket";
-let get_tickets_endpoint = "http://localhost:80/api/tickets";
+let create_ticket_endpoint = "https://reqres.in/api/users";
+let get_tickets_endpoint = "http://www.mocky.io/v2/5ca367134b000061002095e1";
 
 let createTicket = ticket => {
   let json = TypeToJsonMapper.ticketToJson(ticket);
@@ -21,7 +21,8 @@ let delete = id => {
   response;
 };
 
-let getTickets = () => {
-  let response = HttpAdapter.get(get_tickets_endpoint);
+let getTickets = (limit: int, offset: int) => {
+let endpoint = {j|http://localhost:5000/api/tickets?limit=$(limit)&offset=$(offset)|j};
+let response = HttpAdapter.get(endpoint);
   response;
 };

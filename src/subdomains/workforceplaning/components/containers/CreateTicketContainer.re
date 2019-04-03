@@ -1,45 +1,26 @@
 type action =
-  | A_Validate(Ticket.ticketForm)
-  | A_Send(Ticket.ticketForm)
-  | A_UpdateField(Ticket.ticketForm, Ticket.ticketFormField, string)
+  | A_Validate
+  | A_Send
+  | A_UpdateField(Ticket.ticketFormField, string)
   | A_SendSuccesful
   | A_ErrorSending
   | A_Cancel;
 
-type state =
-  | S_WaitingForTicket(Ticket.ticketForm)
-  | S_Validating(Ticket.ticketForm)
-  | S_Sending(Ticket.ticketForm)
+type formState =
+  | S_WaitingForTicket
+  | S_Validating
+  | S_Sending
   | S_FormSent
   | S_SendFailed;
 
-let ticketValues: Ticket.ticketForm = {
-  title: "",
-  discipline: "",
-  projectName: "",
-  grade: "",
-  projectRole: "",
-  priority: "",
-  numberPositions: "0",
-  recruiter: "",
+type globalState = {
+  ticket: Ticket.ticketForm,
+  formState,
+  isBench: bool,
 };
 
-let updateFormState =
-    (currentFields: Ticket.ticketForm, field: Ticket.ticketFormField, text) =>
-  switch (field) {
-  | Title => {...currentFields, title: text}
-  | Discipline => {...currentFields, discipline: text}
-  | ProjectName => {...currentFields, projectName: text}
-  | Grade => {...currentFields, grade: text}
-  | ProjectRole => {...currentFields, projectRole: text}
-  | Priority => {...currentFields, priority: text}
-  | NumberPositions => {...currentFields, numberPositions: text}
-  | Recruiter => {...currentFields, recruiter: text}
-  };
-
-let validateForm = (ticketForm: Ticket.ticketForm, self) => {
-  Js.log("Form Validated");
-  ReasonReact.(self.send(A_Send(ticketForm)));
+let validateForm = (state: formState, self) => {
+  ReasonReact.(self.send(A_Send));
 };
 
 let sendForm = (ticketForm: Ticket.ticketForm, self) => {
@@ -52,48 +33,62 @@ let sendForm = (ticketForm: Ticket.ticketForm, self) => {
   |> ignore;
 };
 
+let render = self => {
+  ReasonReact.(
+    switch (self.state.formState) {
+    | S_WaitingForTicket =>
+      let ticketForm = self.state.ticket;
+      <CreateTicketRender
+        ticketForm
+        update={(field, text) => {
+          self.send(A_UpdateField(field, text));
+        }}
+        create={() => self.send(A_Validate)}
+        cancel={() => self.send(A_Cancel)}
+      />;
+    | S_Sending => <h2> {ReasonReact.string("Sending")} </h2>
+    | S_FormSent => <h2> {ReasonReact.string("TICKET CREATED")} </h2>
+    | _ => <h2> {ReasonReact.string("ERROR")} </h2>
+    }
+  );
+};
+let reduce = (action, globalState, close) => {
+  switch (action) {
+  | A_Validate =>
+    ReasonReact.UpdateWithSideEffects(
+      {...globalState, formState: S_Validating},
+      validateForm(globalState.formState),
+    )
+  | A_UpdateField(ticketFormField, text) =>
+    ReasonReact.Update({
+      ...globalState,
+      ticket:
+        Ticket.updateFormState(globalState.ticket, ticketFormField, text ),
+      formState: S_WaitingForTicket,
+    })
+  | A_Send =>
+    ReasonReact.UpdateWithSideEffects(
+      {...globalState, formState: S_Sending},
+      sendForm(globalState.ticket),
+    )
+  | A_SendSuccesful =>
+    ReasonReact.Update({...globalState, formState: S_FormSent})
+  | A_ErrorSending =>
+    ReasonReact.Update({...globalState, formState: S_FormSent})
+  | A_Cancel =>
+    close();
+    ReasonReact.NoUpdate;
+  };
+};
+
 let component = ReasonReact.reducerComponent("CreateTicketContainer");
 let make = (~close, _self) => {
   ...component,
-  initialState: () => S_WaitingForTicket(ticketValues),
-  reducer: (action, _state) =>
-    switch (action) {
-    | A_Validate(ticketForm) =>
-      ReasonReact.UpdateWithSideEffects(
-        S_Validating(ticketForm),
-        validateForm(ticketForm),
-      )
-    | A_UpdateField(ticketForm, ticketFormField, text) =>
-      ReasonReact.Update(
-        S_WaitingForTicket(
-          updateFormState(ticketForm, ticketFormField, text),
-        ),
-      )
-    | A_Send(ticketForm) =>
-      ReasonReact.UpdateWithSideEffects(
-        S_Sending(ticketForm),
-        sendForm(ticketForm),
-      )
-    | A_SendSuccesful => ReasonReact.Update(S_FormSent)
-    | A_ErrorSending => ReasonReact.Update(S_SendFailed)
-    | A_Cancel =>
-      close();
-      ReasonReact.NoUpdate;
-    },
-  render: self => {
-    switch (self.state) {
-    | S_WaitingForTicket(ticketForm) =>
-      <CreateTicketRender
-        ticketForm
-        update={(field, text) =>
-          self.send(A_UpdateField(ticketForm, field, text))
-        }
-        create={() => self.send(A_Validate(ticketForm))}
-        cancel={() => self.send(A_Cancel)}
-      />
-    | S_Sending(ticketForm) => <h2> {ReasonReact.string("Sending")} </h2>
-    | S_FormSent => <h2> {ReasonReact.string("TICKET CREATED")} </h2>
-    | _ => <h2> {ReasonReact.string("ERROR")} </h2>
-    };
+  initialState: () => {
+    ticket: Ticket.defaultValues,
+    formState: S_WaitingForTicket,
+    isBench: false,
   },
+  reducer: (action, globalState) => reduce(action, globalState, close),
+  render,
 };
