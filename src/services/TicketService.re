@@ -22,7 +22,8 @@ let delete = id => {
   response;
 };
 
-let getTickets = () => {
-  let response = HttpAdapter.get(get_tickets_endpoint);
+let getTickets = (limit: int, offset: int) => {
+let endpoint = {j|http://localhost:5000/api/tickets?limit=$(limit)&offset=$(offset)|j};
+let response = HttpAdapter.get(endpoint);
   response;
 };

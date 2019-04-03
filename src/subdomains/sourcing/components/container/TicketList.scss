@@ -15,9 +15,10 @@
     border-bottom: 1px solid #c2c2c2;
   }
   &__ticket-preview {
+    width: 40%;
   }
   &__canditates {
-    flex-grow: 5;
+    width: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
