@@ -9,11 +9,40 @@ type action =
   | A_DisplayTickets(Ticket.ticketsList)
   | A_DisplayTicketForm
   | A_CloseTicketForm
-  | A_DisplayError;
+  | A_DisplayError
+  | A_NextPage
+  | A_PreviousPage;
+
+type pagination = {
+  limit: int,
+  offset: int,
+  currentPage: int,
+};
 
 type state = {
+  pagination,
   createTicketForm: bool,
   currentDisplay,
+};
+
+let offsetOperation = (pagination: pagination): int => {
+  pagination.offset - pagination.limit;
+};
+
+let nextPage = (pagination: pagination) => {
+  limit: pagination.limit,
+  offset:
+    pagination.offset + pagination.limit < pagination.limit ?
+      pagination.limit : pagination.offset + pagination.limit,
+  currentPage: pagination.currentPage + 1,
+};
+
+let previousPage = (pagination: pagination) => {
+  limit: pagination.limit,
+  offset: offsetOperation(pagination) < 0 ? 0 : offsetOperation(pagination),
+  currentPage:
+    pagination.currentPage == 1 ?
+      pagination.currentPage : pagination.currentPage - 1,
 };
 
 let renderTickets = (~tickets: Ticket.ticketsList) =>
@@ -24,8 +53,10 @@ let renderCreateTicketForm = self =>
     <CreateTicketContainer close={() => self.send(A_CloseTicketForm)} />
   );
 
-let fetchTickets = self => {
-  let tickets = TicketService.getTickets();
+let fetchTickets = (pagination: pagination, self) => {
+  let tickets = TicketService.getTickets(pagination.limit, pagination.offset);
+  Js.log(pagination.limit);
+  Js.log(pagination.offset);
   tickets
   |> BsFluture.fork(
        error => Js.log("ERROR"),
@@ -38,13 +69,12 @@ let fetchTickets = self => {
      )
   |> ignore;
 };
-
 let reducer = (action, state) =>
   switch (action) {
   | A_FetchTickets =>
     ReasonReact.UpdateWithSideEffects(
       {...state, currentDisplay: S_FetchingTickets},
-      fetchTickets,
+      fetchTickets(state.pagination),
     )
   | A_DisplayTickets(ticketsList) =>
     ReasonReact.Update({
@@ -57,6 +87,28 @@ let reducer = (action, state) =>
     ReasonReact.Update({...state, createTicketForm: false})
   | A_DisplayError =>
     ReasonReact.Update({...state, currentDisplay: S_ErrorDisplayed})
+  | A_NextPage =>
+    ReasonReact.UpdateWithSideEffects(
+      {
+        ...state,
+        pagination: {
+          nextPage(state.pagination);
+        },
+        currentDisplay: S_FetchingTickets,
+      },
+      fetchTickets(nextPage(state.pagination)),
+    )
+  | A_PreviousPage =>
+    ReasonReact.UpdateWithSideEffects(
+      {
+        ...state,
+        pagination: {
+          previousPage(state.pagination);
+        },
+        currentDisplay: S_FetchingTickets,
+      },
+      fetchTickets(previousPage(state.pagination)),
+    )
   };
 let renderPageMessage = (message, showTicketForm, self) => {
   ReasonReact.(
@@ -78,6 +130,11 @@ let renderPageTickets =
     <div>
       <TicketOverview />
       {renderTickets(ticketsList)}
+      <Paginator
+        next={() => self.send(A_NextPage)}
+        prev={() => self.send(A_PreviousPage)}
+        currentPage={self.state.pagination.currentPage}
+      />
       <TicketViewFooter
         cancel={() => self.send(A_DisplayTicketForm)}
         length={List.length(ticketsList.tickets)}
@@ -108,6 +165,11 @@ let component = ReasonReact.reducerComponent("TicketView");
 let make = _self => {
   ...component,
   initialState: () => {
+    pagination: {
+      offset: 0,
+      limit: 2,
+      currentPage: 1,
+    },
     createTicketForm: false,
     currentDisplay: S_ComponentsCreated,
   },
