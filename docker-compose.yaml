@@ -1,0 +1,12 @@
+version: '3'
+services:
+  front:
+    build: . 
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    working_dir: /app
+    command: bash -c "npm run build && npm run server && sh entry.sh"
+    ports:
+      - '8001:8001'
+    
