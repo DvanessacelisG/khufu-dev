@@ -2,11 +2,10 @@ version: '3'
 services:
   front:
     build: . 
+    container_name: frontend.-test
     volumes:
       - '.:/app'
       - '/app/node_modules'
     working_dir: /app
-    command: bash -c "npm run build && npm run server && sh entry.sh"
-    ports:
-      - '8001:8001'
-    
+    command: bash -c "npm run build && npm run server"
+
