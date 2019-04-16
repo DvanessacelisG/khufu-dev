@@ -45,6 +45,7 @@ Here you can find 2 files:
 ```config.vm.synced_folder "C:/Users/dcelis/Desktop/khufu-D/khufu", "/home/vagrant/khufu"```
 
 ```C:/Users/dcelis/Desktop/khufu-D/khufu``` --> Path to the folder created in the first step.
+
 4) In the current directory execute the following command 
 ```Vagrant up```
 
