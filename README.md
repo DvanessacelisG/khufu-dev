@@ -1,6 +1,6 @@
 # Khufu-Frontend
 Hello and Welcome,
-This is the repository for the frontend side of **Khufu**, the sourcing tool of Endava Bogotá
+This is the repository for the frontend side of **Khufu**, the sourcing tool of Endava Bogotá.
 
 ### Tools
 The project is built using
@@ -10,8 +10,10 @@ The project is built using
 ### Installation-Configuration- Development Environment
 Why is it so important to consider a development environment when we work on a project?
 
--Type code and observe changes as soon as possible in our Docker containers (preferably without manual actions)
+-Type code and observe changes as soon as possible in our Docker containers (preferably without manual actions).
+
 -Have a local environment that is representative of the actual deployment environment.
+
 -This will make your life much easier in the long run and get new developers up and running on the project much more quickly.
 
 **THE PREREQUISITES:** You need to install the following tools:
