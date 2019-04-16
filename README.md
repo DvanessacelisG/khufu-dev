@@ -44,8 +44,14 @@ Here you can find 2 files:
 
 ```config.vm.synced_folder "C:/Users/dcelis/Desktop/khufu-D/khufu", "/home/vagrant/khufu"```
 
-```C:/Users/dcelis/Desktop/khufu-D/khufu``` --> Path to the folder create in the first step.
+```C:/Users/dcelis/Desktop/khufu-D/khufu``` --> Path to the folder created in the first step.
+4) In the current directory execute the following command 
+```Vagrant up```
 
+When this command will finish, you will have a virtual machine running khufu's project . You will not actually see anything though, since Vagrant runs the virtual machine without a UI. To prove that it is running, you can SSH into the machine:
+```Vagrant ssh```
+
+This command will drop you into a full-fledged SSH session. Go ahead and interact with the machine, if you want. 
 
 
 https://fabianlee.org/2016/09/07/git-calling-git-clone-using-password-with-special-character/
