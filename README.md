@@ -32,20 +32,18 @@ Why is it so important to consider a development environment when we work on a p
 
 -Here you can find 2 files: 
 
--- Vagrantfile: With the Vagrantfile we describe the type of machine required for a project, and how to configure and provision these machines.
+> Vagrantfile: With the Vagrantfile we describe the type of machine required for a project, and how to configure and provision these machines.
 
--- Provision: Provisioners in Vagrant allow you to automatically install software, alter configurations, and more on the machine as part of the vagrant up process.
+> Provision: Provisioners in Vagrant allow you to automatically install software, alter configurations, and more on the machine as part of the vagrant up process.
 
 3) Once you have the files in the folder, please changes in the Vagrantfile the next lines with your data:
+
 ```config.vm.synced_folder "C:/Users/dcelis/Desktop/khufu-D/khufu", "/home/vagrant/khufu"```
-C:/Users/dcelis/Desktop/khufu-D/khufu -- here you put the Path to the folder create in the first step.
+
+```C:/Users/dcelis/Desktop/khufu-D/khufu``` here you put the Path to the folder create in the first step.
+
 
 
 
 https://fabianlee.org/2016/09/07/git-calling-git-clone-using-password-with-special-character/
 
-### Development
-
-### Docker
-
-# khufu-dev
